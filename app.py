@@ -54,6 +54,58 @@ except Exception as e:
     st.error(f"Could not load model files: {e}")
     st.stop()
 
+import pandas as pd
+import streamlit as st
+
+st.title("💳 Credit Card Fraud Detection")
+st.write(
+    "Upload a CSV file to identify potentially fraudulent transactions."
+)
+
+uploaded_file = st.file_uploader(
+    "Choose a CSV file",
+    type=["csv"],
+    help="Upload a CSV containing Time, V1–V28, and Amount."
+)
+
+if uploaded_file is not None:
+    try:
+        df = pd.read_csv(uploaded_file)
+
+        st.subheader("Uploaded Transactions")
+        st.dataframe(df.head())
+
+        required_features = (
+            ["Time"]
+            + [f"V{i}" for i in range(1, 29)]
+            + ["Amount"]
+        )
+
+        missing = [
+            col for col in required_features
+            if col not in df.columns
+        ]
+
+        if missing:
+            st.error(
+                f"Your CSV is missing these columns: {missing}"
+            )
+        else:
+            st.success(
+                f"File uploaded successfully: {len(df)} transactions."
+            )
+
+            if st.button("Analyze Transactions"):
+                st.info(
+                    "Your CSV is ready. The prediction section "
+                    "must apply the loaded scaler and model."
+                )
+
+    except Exception as e:
+        st.error(f"Could not read the CSV file: {e}")
+
+
+
 
     # Keep labels separate from the model input
     actual_labels = df["Class"].copy() if "Class" in df.columns else None
