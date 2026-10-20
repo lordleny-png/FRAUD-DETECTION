@@ -15,64 +15,45 @@ st.title("🛡️ Credit Card Fraud Detection")
 st.caption("Random Forest model — educational portfolio project")
 
 # Load model artifacts
-ARTIFACT_DIR = Path("fraud_detection_artifacts")
+
+from pathlib import Path
+import joblib
+import streamlit as st
+
+from huggingface_hub import hf_hub_download
+
+REPO_ID = "Leny7/fraud-detection-model"
 
 @st.cache_resource
 def load_artifacts():
-    model = joblib.load(
-        ARTIFACT_DIR / "random_forest_fraud_model.pkl"
+    model_path = hf_hub_download(
+        repo_id=REPO_ID,
+        filename="random_forest_fraud_model.pkl"
     )
-    scaler = joblib.load(
-        ARTIFACT_DIR / "fraud_scaler.pkl"
+
+    scaler_path = hf_hub_download(
+        repo_id=REPO_ID,
+        filename="fraud_scaler.pkl"
     )
-    config = joblib.load(
-        ARTIFACT_DIR / "fraud_model_config.pkl"
+
+    config_path = hf_hub_download(
+        repo_id=REPO_ID,
+        filename="fraud_model_config.pkl"
     )
+
+    model = joblib.load(model_path)
+    scaler = joblib.load(scaler_path)
+    config = joblib.load(config_path)
+
     return model, scaler, config
 
 try:
     model, scaler, config = load_artifacts()
-except Exception as exc:
-    st.error(
-        "Model files could not be loaded. Check that all three "
-        "PKL files are inside fraud_detection_artifacts."
-    )
-    st.exception(exc)
+    st.success("Fraud detection model loaded successfully!")
+except Exception as e:
+    st.error(f"Could not load model files: {e}")
     st.stop()
 
-feature_names = config["feature_names"]
-scaled_features = config.get(
-    "scaled_features", ["Amount", "Time"]
-)
-default_threshold = float(config.get("threshold", 0.75))
-
-threshold = st.sidebar.slider(
-    "Fraud decision threshold",
-    min_value=0.05,
-    max_value=0.99,
-    value=min(max(default_threshold, 0.05), 0.99),
-    step=0.01
-)
-
-st.sidebar.write(f"Current threshold: **{threshold:.2f}**")
-
-st.subheader("Upload transaction data")
-st.write(
-    "Upload a CSV containing Time, V1–V28 and Amount. "
-    "The Class column is optional and is used only for evaluation."
-)
-
-uploaded_file = st.file_uploader(
-    "Choose a transaction CSV",
-    type=["csv"]
-)
-
-if uploaded_file is not None:
-    df = pd.read_csv(uploaded_file)
-
-    if df.empty:
-        st.error("The uploaded file contains no transactions.")
-        st.stop()
 
     # Keep labels separate from the model input
     actual_labels = df["Class"].copy() if "Class" in df.columns else None
