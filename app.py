@@ -111,8 +111,8 @@ if uploaded_file is not None:
     actual_labels = df["Class"].copy() if "Class" in df.columns else None
     input_df = df.drop(columns=["Class"], errors="ignore")
       
+    
     feature_names = config["feature_names"]
-
     missing = [
 
         col for col in feature_names
