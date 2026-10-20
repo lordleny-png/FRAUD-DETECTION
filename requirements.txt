@@ -4,4 +4,4 @@ numpy
 scikit-learn
 joblib
 matplotlib
-
+huggingface_hub
