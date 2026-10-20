@@ -113,17 +113,27 @@ if uploaded_file is not None:
       
     
     feature_names = config["feature_names"]
-    missing = [
+   
+# Define the expected input features
+feature_names = (
+    ["Time"]
+    + [f"V{i}" for i in range(1, 29)]
+    + ["Amount"]
+)
 
-        col for col in feature_names
-        if col not in input_df.columns
-    ]
+# Check whether the uploaded CSV contains all required columns
+missing = [
+    col for col in feature_names
+    if col not in df.columns
+]
 
-    if missing:
-        st.error(
-            "Missing required features: " + ", ".join(missing)
-        )
-        st.stop()
+if missing:
+    st.error(f"Your CSV is missing these columns: {missing}")
+else:
+    st.success("All required transaction features are present.")
+    st.dataframe(df[feature_names].head())
+
+
 
     # Match the exact training feature order
     X = input_df[feature_names].copy()
