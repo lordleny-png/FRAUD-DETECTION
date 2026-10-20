@@ -1,6 +1,15 @@
 # Credit Card Fraud Detection Using Machine Learning
 
 ## About the Project
+## 🚀 Live Demo
+
+Try the interactive Credit Card Fraud Detection dashboard:
+
+👉 **[Launch the Streamlit App](https://fraud-detection-using-machine-learning-p5vvulvohoqhlkztnkjpuv.streamlit.app/)**
+
+Upload a CSV file containing transaction features to generate fraud predictions, review risk probabilities, and download the results.
+
+**Note:** This project is for educational and demonstration purposes. Predictions indicate potential fraud risk and should not be treated as definitive proof of fraud.
 
 Credit card fraud is a major challenge for financial institutions and digital payment systems. Fraudulent transactions can cause financial losses and undermine customer trust.
 
